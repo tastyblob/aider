@@ -6,6 +6,7 @@ from pathlib import Path
 import configargparse
 import git
 import openai
+import shutil
 
 from aider import __version__, models
 from aider.coders import Coder
@@ -477,6 +478,10 @@ def main(argv=None, input=None, output=None, force_git_root=None):
     )
 
     if args.fzf:
+        if not shutil.which("fzf"):
+            FZF_URL = "https://github.com/junegunn/fzf#installation"
+            io.tool_error(f"Cannot find 'fzf' executable in PATH. Visit {FZF_URL} for installation instructions.")
+            return
         selected_files = io.fzf_select_files()
         if not selected_files:
             io.tool_error("No files selected.")
